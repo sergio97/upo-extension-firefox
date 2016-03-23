@@ -1,0 +1,22 @@
+{
+  "title": "Upo for Firefox",
+  "name": "data",
+  "version": "2.0.1",
+  "description": "Upo browser extension for Firefox",
+  "main": "data/index.js",
+  "author": "Sergio Martins",
+  "engines": {
+    "firefox": ">=38.0a1",
+    "fennec": ">=38.0a1"
+  },
+  "license": "GPLv3",
+  "keywords": [
+    "jetpack"
+  ],
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-jshint": "^2.0.0",
+    "jshint": "^2.9.1",
+    "xregexp": "^3.0.0"
+  }
+}

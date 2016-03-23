@@ -1,0 +1,25 @@
+Development overview
+====================
+
+1. set up repo, hello-world extention
+1. set up gulp
+1. working parser. Successfully parse aid page (and display pop-up or log to console)
+1. protocol buffers code working
+1. POST hard-coded data to UpoOpu to prove protocolbuffers working and format is correct
+1. post parsed data to UpoOpu
+1. MVP achieved, but not feature parity with existing extention
+1. get fancy HTML-modifying code ("extension content") working
+1. first beta release?
+1. clean up/improve code as needed
+
+
+TODO Later
+==========
+
+1. Get .proto files into the repo and a gulp target for building them
+1. conform to some kind of naming convention!
+1. Remove global variables from parsers.js
+  1. selfData could come from a context object that is passed in when
+	 the parser is initialized
+1. decide if we should use backticks for strings w/ variables
+1. go through code and use "const" and "let" where appropriate
