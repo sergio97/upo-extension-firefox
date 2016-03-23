@@ -1,0 +1,5 @@
+*.xpi
+node_modules/
+dist/
+saved_pages/
+
