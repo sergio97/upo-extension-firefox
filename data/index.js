@@ -103,7 +103,7 @@ function findParser(body, metadata) {
       // console.log("Regex matches:", name);
 
       // Instantiate the matching parser so we can extract data
-      var parser_class = parsers.getParser(body, name, metadata);
+      var parser_class = parsers.getParser(name);
       var parser = new parser_class(body, name, metadata);
       // console.log("Will use parser:", parser);
       return parser;

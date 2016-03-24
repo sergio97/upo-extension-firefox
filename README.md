@@ -1,7 +1,7 @@
 Upo browser extention for Firefox.
 
 This is an early work-in-progress. I'm pushing it up to GitHub so I can
-easily share and discuss potential implementations/features with others.
+discuss this work with others.
 
 
 Installation

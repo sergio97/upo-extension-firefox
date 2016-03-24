@@ -381,14 +381,7 @@ class AidParser extends BaseParser {
 
 
 
-exports.getParser = function(data, parser_name, metadata) {
-  if (typeof(parser_name)=="undefined") {
-    parser_name = "base";
-  }
-  if (typeof(metadata)=="undefined") {
-    metadata = {};
-  }
-
+exports.getParser = function(parser_name) {
   switch (parser_name) {
     case "self":
       return SelfParser;
