@@ -121,7 +121,7 @@ function findParser(body, metadata) {
 
 // code for testing easily/lazily
 var tabs = require("sdk/tabs");
-tabs.open("file:///home/sergio/code/upo-extension-firefox/saved_pages/SelfSurvey.html");
+tabs.open("file:///home/sergio/code/upo-extension-firefox/saved_pages/SelfSpells.html");
 // tabs.open("http://utopia-game.com");
 
 console.log("extension code has finished initializing")

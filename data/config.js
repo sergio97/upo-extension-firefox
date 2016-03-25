@@ -98,7 +98,7 @@ ns.SPELLS = [
   ["naturesblessing", "Unfortunately, that land has been blessed by nature, and our spell had no effect", true],
 ]
 
-ns.THIEFOPS = [
+var THIEFOPS = [
   // op, string, damage
   ["sabotagewizards", ],
   ["robthegranaries", "Early indications show that our operation was a success. Our thieves have returned with (?<delta>[number]) bushels.", "food"],
@@ -115,7 +115,7 @@ ns.THIEFOPS = [
   ["freeprisoners", ],
   ["assassinatewizards", "Our thieves assassinated (?<delta>[number]) wizards of the", "wizards"],
   ["propaganda", "We have converted (?<delta>[number]) .{0,40}(?<kind>(?:wizards|thieves|soldiers|specialist|[elite]))"],
-  ]
+];
 
 var BUILDINGS = [
   ["barrenlands","Barren Land", null],
@@ -226,8 +226,7 @@ FORMATS = [
 var raw_page_identifiers = [
   ["aid", "We have sent [number] (?:bushel|gold coin|rune|soldier)s?.{0,80} to [province] [location]"],
   ["self", "self\\[[province]:[location]\\]"],
-  // ["sot", "the province of [province] [location] ?(?:Pre Age|[uto_date]).?[word]{3,15}.?race [race]"],
-  ["sot", "the province of [province] [location]"],
+  ["sot", "the province of [province] [location] ?(?:Pre Age|[uto_date]).?[word]{3,15}.?race [race]"],
   ["angelsot", "The Province of [province] [location] \\[http://www.utopiatemple.com"],
   ["som", "thieves listen in on a report from the Military Elders of [province] [location]"],
   ["selfsom", "[ruler], we have [number] generals available to lead our armies. One must always stay here to lead our forces in defense"],
@@ -241,8 +240,8 @@ var raw_page_identifiers = [
   ["kd", "(?:current kingdom is|kingdom of) [kingdom] [location](?:.{0,400} total provinces)"],
   ["magic", "Your wizards(?: gather [number] runes and)? begin casting.*?[spell_result]"],
   ["thievery", "Early indications show that our operation was a success.*?[thief_result]"],
-  ["attack", "(Your army was no match for the defenses of|Your forces arrive at) [province] [location]"],
   ["selfspells", "(there are currently no magical auras affecting our province|the magical auras affecting our province are detailed below)"],
+  ["attack", "(Your army was no match for the defenses of|Your forces arrive at) [province] [location]"],
 ];
 
 

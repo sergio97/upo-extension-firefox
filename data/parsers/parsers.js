@@ -339,12 +339,33 @@ class ThieveryParser extends BaseParser {
     console.log("Initializing ThieveryParser");
     super(data, parser_name, metadata);
   }
+
+  parse() {
+    // var target_string = "";
+    // var result = {};
+    // [result.province, result.kd, result.isl] = this.get_target(target_string);
+
+    // if (!result.province) {
+    //   console.log("ThieveryParser initialized for op with no target!");
+    //   return null;
+    // }
+
+
+    // After reading config.THIEFOPS, this parser isn't ready yet...
+    console.log("Parsing this type of thievery op is not implemented yet");
+    return null;
+  }
 }
 
 class SelfSpellParser extends BaseParser {
   constructor(data, parser_name, metadata) {
     console.log("Initializing SelfSpellParser");
     super(data, parser_name, metadata);
+  }
+
+  parse() {
+    console.log("Parsing self-spells is not implemented yet");
+    return null;
   }
 }
 
