@@ -129,7 +129,7 @@ class BaseParser {
     return parseInt(accuracy.replace("%", ""));
   }
 
-  parse_basic_thievery_data(target_string) {
+  parse_basic_intel(target_string) {
     var result = {};
     result.is_self = this.parser_name.includes("self");
 
@@ -200,6 +200,115 @@ class SoMParser extends BaseParser {
     console.log("Initializing SoMParser");
     super(data, parser_name, metadata);
   }
+
+  parse() {
+    var target_string = "military elders of [province] [location]";
+    var result = this.parse_basic_intel(target_string);
+
+    result.military_pct = this.get(
+      "approximately [percentage] of our maximum population"
+    );
+    result.wages = this.get("wage rate is [percentage] of normal levels");
+    result.military_efficiency = this.get(
+      "our military is functioning at [percentage] efficiency"
+    );
+
+    result.off_me = this.get("Offensive Military Effectiveness [percentage]");
+    result.offense = this.get("Net Offensive Points at Home [number]");
+    result.def_me = this.get("Defensive Military Effectiveness [percentage]");
+    result.defense = this.get("Net Defensive Points at Home [number]");
+
+
+    var home_army = {
+      "name": "Home Army",
+      "number": 0,
+    };
+    var armies = [home_army];
+
+    // Determine which armies are away
+    var _away_duration;
+    for (var i=1; i<=5; i++) {
+      _away_duration = this.get("Army #" + i + " \\([number] days left");
+        if (_away_duration) {
+          armies.push({
+            "name": "Away Army #" + i,
+            "number": i,
+            "away": _away_duration,
+          });
+        }
+    }
+
+    var unit_count_regex = " [number]".repeat(armies.length);
+
+    var generals = this.get_multi("generals" + unit_count_regex);
+    var soldiers = this.get_multi("soldiers" + unit_count_regex);
+    // ospec, dspec, and elite values have unit name
+    // as the first value, but we don't need it
+    var ospecs = this.get_multi("[ospec]" + unit_count_regex).splice(1);
+    var dspecs = this.get_multi("[dspec]" + unit_count_regex).splice(1);
+    var elites = this.get_multi("[elite]" + unit_count_regex).splice(1);
+    var horses = this.get_multi("war horses" + unit_count_regex);
+    var land = this.get_multi("captured land" + unit_count_regex);
+
+    for (var index in armies) {
+      armies[index]["generals"] = generals[index];
+      armies[index]["soldiers"] = soldiers[index];
+      armies[index]["ospecs"] = ospecs[index];
+      armies[index]["dspecs"] = dspecs[index];
+      armies[index]["elites"] = elites[index];
+      armies[index]["horses"] = horses[index];
+      armies[index]["land"] = land[index];
+    }
+    // console.log("Armies:", armies);
+
+    var v1_armies = this.armies_to_v1_format(armies);
+    //merge into result
+    for (var attr in v1_armies) {
+      result[attr] = v1_armies[attr];
+    }
+
+    var training_data = this.data.slice(this.data.indexOf("below shows our training estimates"));
+    var get_multi = this.get_multi;
+    var get_incoming = function(format_string) {
+      return get_multi(
+        format_string,
+        training_data,
+        function(matches) {
+          var result = matches[2].split(" ");
+          result.shift();
+          return result;
+        }
+      );
+    };
+    result.training_ospecs = get_incoming("[ospec](( [number]){0,24})");
+    result.training_dspecs = get_incoming("[dspec](( [number]){0,24})");
+    result.training_elites = get_incoming("[elite](( [number]){0,24})");
+    result.training_thieves = get_incoming("(Thieves)(( [number]){0,24})");
+
+    return result;
+  }
+
+  armies_to_v1_format(armies) {
+    var v1_format = {
+      army_home: armies[0],
+      army_out_1: {},
+      army_out_2: {},
+      army_out_3: {},
+      army_out_4: {},
+      army_out_5: {},
+    };
+
+    delete v1_format.army_home.number;
+    delete v1_format.army_home.name;
+    for (var entry of armies.splice(1)) {
+      var army_number = entry.number;
+      delete entry.number;
+      delete entry.name;
+      v1_format["army_out_" + army_number] = entry;
+    }
+
+    return v1_format;
+  }
 }
 
 class SurveyParser extends BaseParser {
@@ -210,7 +319,7 @@ class SurveyParser extends BaseParser {
 
   parse() {
     var target_string = "thieves scour the lands of [province] [location]";
-    var result = this.parse_basic_thievery_data(target_string);
+    var result = this.parse_basic_intel(target_string);
 
     result.workers = this.get("Available Workers [number]");
     result.building_efficiency = this.get("Building Efficiency [percentage]");
@@ -261,7 +370,7 @@ class ScienceParser extends BaseParser {
 
   parse() {
     var target_string = "thieves visit the research centers of [province] [location]\.";
-    var result = this.parse_basic_thievery_data(target_string);
+    var result = this.parse_basic_intel(target_string);
     result.is_self = this.parser_name.includes("self");
 
     var science = [];
@@ -407,8 +516,10 @@ exports.getParser = function(parser_name) {
     case "self":
       return SelfParser;
     case "sot":
+    case "selfsot":
       return SoTParser;
     case "som":
+    case "selfsom":
       return SoMParser;
     case "survey":
     case "selfsurvey":
