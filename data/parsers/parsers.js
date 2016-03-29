@@ -39,25 +39,22 @@ function get_matches(data, pattern, is_xregex) {
 }
 
 function utimeToInt(utime, short) {
-  if (typeof(short)=="undefined") {
-    // I know undefined is also false, but explicit is better than implicit
-    short = false;
-  }
-  var utopia_date_regex = new RegExp("(January|February|March|April|May|June|July) ([0-9]{1,2}) of YR([0-9]{1,2})");
   var months = ["January", "February", "March", "April", "May", "June", "July"];
+  var regex_string = `(${months.join("|")}) ([0-9]{1,2}) of YR([0-9]{1,2})`
   if (short) {
     months = ["Jan", "Feb", "March", "April", "May", "June", "July"];
+    regex_string = `(${months.join("|")}) ([0-9]{1,2}), YR([0-9]{1,2})`
   }
+  var regex = new RegExp(regex_string);
 
-  var matches = utopia_date_regex.exec(utime);
-  // console.log("Parsing this date:", utime, " Result of parsing:", matches);
+  var matches = regex.exec(utime);
+  // console.log("Parsing this date:", utime, "Is short?", short, "- Result of parsing:", matches);
   var day = parseInt(matches[2]);
   var month = matches[1];
   var year = parseInt(matches[2]);
 
   return day + (months.indexOf(month) * 24) + (year * 24 * 7);
 }
-
 
 
 class BaseParser {
@@ -68,29 +65,6 @@ class BaseParser {
     this.data = data;
     this.parser_name = parser_name;
     this.metadata = metadata;
-
-    this.full_data = data;
-    this.used_data = "";
-    this.start_data = data.length;
-    this.end_data = 0;
-    this.sequential = true;
-    this.pb = null;
-    this.header_format = null;
-    this.get_count = 0
-    this.parsed = null;
-
-    if ("utime" in this.metadata) {
-      var now = parseInt(new Date().valueOf() / 1000);
-      lastUtoTime = [now, utimeToInt(this.metadata.utime)];
-    }
-    if ("hash" in this.metadata) {
-      var [_, province, isl, kd] = this.metadata.hash.split(":");
-      selfData = [province, parseInt(kd), parseInt(isl)];
-    }
-    if ("self" in this.metadata) {
-      var meta_self = this.metadata.self;
-      selfData = [meta_self.province, meta_self.kd, meta_self.isl];
-    }
 
     // console.log("Finished initializing base parser");
   }
@@ -133,8 +107,8 @@ class BaseParser {
     return parseInt(accuracy.replace("%", ""));
   }
 
-  parse_basic_intel(target_string) {
-    var result = {};
+  add_common_intel(result, target_string) {
+    // Parse data common to SoM/Survey/SoS and add it to 'result'
     result.is_self = this.parser_name.includes("self");
 
     if (result.is_self) {
@@ -151,39 +125,27 @@ class BaseParser {
     return result;
   }
 
-  header() {
-    throw "Not Implemented Yet";
+  parse_common_data() {
+    var result = {};
+
+    result.unix_time = parseInt(new Date().valueOf() / 1000);
+
+    var utopia_date = this.get("[utopia_short_date] Throne");
+    console.log("Attempting to parse short date returned:", utopia_date);
+    if (utopia_date) {
+      result.uto_time = utimeToInt(utopia_date, true);
+    } else {
+      console.log("Warning: Unable to detect Utopia date");
+    }
+
+    return result
   }
 
   parse() {
     throw "parse() not implemented yet for parser: " + this.parser_name;
   }
 
-  toPb(trust) {
-    if (typeof(trust)=="undefined") {trust = 0;}
-    // Original coco code:
-    //
-    // if not @pb then return null
-    // data = @parse()
-    // data["unix_time"] = (new Date().valueOf() * 0.001)|0
-    // utime = @get("(([a-z]+) ([0-9]+), YR([0-9]+)) throne", 0, {data: @full_data})
-    // if utime then data["uto_time"] = ns.ushortTimeToInt(utime)
-    // if trust > 0 and trust <= 5 then data["trust"] = trust
-    // return upoopu.tools.pb.buildEncoded(@pb, data)
-
-    return null;
-  }
-
-  rewind() {
-    throw "Rewind() was called. What even is this?"
-  }
-
 }
-
-
-
-
-
 
 class SelfParser extends BaseParser {
   constructor(data, parser_name, metadata) {
@@ -199,7 +161,7 @@ class SoTParser extends BaseParser {
   }
 
   parse() {
-    var result = {};
+    var result = this.parse_common_data();
 
     result.is_self = true;
     if (this.get("(Thieves Unknown)")) {
@@ -307,8 +269,10 @@ class SoMParser extends BaseParser {
   }
 
   parse() {
+    var result = this.parse_common_data();
+
     var target_string = "military elders of [province] [location]";
-    var result = this.parse_basic_intel(target_string);
+    this.add_common_intel(result, target_string);
 
     result.military_pct = this.get(
       "approximately [percentage] of our maximum population"
@@ -423,8 +387,10 @@ class SurveyParser extends BaseParser {
   }
 
   parse() {
+    var result = this.parse_common_data();
+
     var target_string = "thieves scour the lands of [province] [location]";
-    var result = this.parse_basic_intel(target_string);
+    this.add_common_intel(result, target_string);
 
     result.workers = this.get("Available Workers [number]");
     result.building_efficiency = this.get("Building Efficiency [percentage]");
@@ -474,8 +440,10 @@ class ScienceParser extends BaseParser {
   }
 
   parse() {
+    var result = this.parse_common_data();
+
     var target_string = "thieves visit the research centers of [province] [location]\.";
-    var result = this.parse_basic_intel(target_string);
+    this.add_common_intel(result, target_string);
     result.is_self = this.parser_name.includes("self");
 
     var science = [];
@@ -535,7 +503,7 @@ class InfiltrateParser extends BaseParser {
   }
 
   parse() {
-    var result = {};
+    var result = this.parse_common_data();
 
     var accuracy = this.get_thievery_accuracy();
 
@@ -556,7 +524,7 @@ class ThieveryParser extends BaseParser {
 
   parse() {
     // var target_string = "";
-    // var result = {};
+    // var result = this.parse_common_data();
     // [result.province, result.kd, result.isl] = this.get_target(target_string);
 
     // if (!result.province) {
@@ -599,7 +567,7 @@ class AidParser extends BaseParser {
   parse() {
     var aid_match = this.get("(We have sent .* It should arrive shortly)");
 
-    var result = {};
+    var result = this.parse_common_data();
     result.food = this.get("[number] bushel", aid_match) || 0;
     result.gold = this.get("[number] gold", aid_match) || 0;
     result.runes = this.get("[number] rune", aid_match) || 0;

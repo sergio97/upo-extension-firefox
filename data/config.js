@@ -200,7 +200,7 @@ FORMATS = [
   ["kingdom", "[a-zA-z0-9 _-]{3,30}"],
   ["location", "\\(\\s?([0-9]{1,2})\\s?:\\s?([0-9]{1,2})\\s?\\)"],
   ["utopia_date", "(January|February|March|April|May|June|July) ([0-9]{1,2}) of YR([0-9]{1,2})"],
-  ["utopia_short_date", "(Jan|Feb|March|April|May|June|July) ([0-9]{1,2}) of YR([0-9]{1,2})"],
+  ["utopia_short_date", "(Jan|Feb|March|April|May|June|July) ([0-9]{1,2}), YR([0-9]{1,2})"],
   ["word", "\\S?\\s?\\S+\\b\\S*"],
   ["number", "[-0-9,.]+"],
   ["percentage", "[-0-9,.]+%"],
