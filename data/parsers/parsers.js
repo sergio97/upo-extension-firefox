@@ -13,9 +13,6 @@ var lastUtoTime = null;
 
 var reCache = {};
 
-var months = ["jan", "feb", "march", "april", "may", "june", "july"];
-var utimeRegex = /([a-z]+) ([0-9]+) of YR([0-9]+)/i;
-var ushortTimeRegex = /([a-z]+) ([0-9]+), YR([0-9]+)/i;
 
 function hoursBetween(oldStamp, newStamp) {
   throw "Not Implemented Yet"
@@ -41,18 +38,25 @@ function get_matches(data, pattern, is_xregex) {
   return [matches, start, end];
 }
 
-function parseRuler(rulerString) {
-  throw "Not Implemented Yet";
-}
+function utimeToInt(utime, short) {
+  if (typeof(short)=="undefined") {
+    // I know undefined is also false, but explicit is better than implicit
+    short = false;
+  }
+  var utopia_date_regex = new RegExp("(January|February|March|April|May|June|July) ([0-9]{1,2}) of YR([0-9]{1,2})");
+  var months = ["January", "February", "March", "April", "May", "June", "July"];
+  if (short) {
+    months = ["Jan", "Feb", "March", "April", "May", "June", "July"];
+  }
 
-function utimeToInt(utime) {
-  throw "Not Implemented Yet";
-}
+  var matches = utopia_date_regex.exec(utime);
+  // console.log("Parsing this date:", utime, " Result of parsing:", matches);
+  var day = parseInt(matches[2]);
+  var month = matches[1];
+  var year = parseInt(matches[2]);
 
-function ushortTimeToInt(utime) {
-  throw "Not Implemented Yet";
+  return day + (months.indexOf(month) * 24) + (year * 24 * 7);
 }
-
 
 
 
@@ -192,6 +196,107 @@ class SoTParser extends BaseParser {
   constructor(data, parser_name, metadata) {
     console.log("Initializing SoTParser");
     super(data, parser_name, metadata);
+  }
+
+  parse() {
+    var result = {};
+
+    result.is_self = true;
+    if (this.get("(Thieves Unknown)")) {
+      result.is_self = false;
+      result.accuracy = this.get_thievery_accuracy();
+    }
+
+    var matches = this.get_multi("the province of [province] [location] ?(?:Pre Age|[utopia_date])");
+    result.province = matches[0];
+    result.kd = matches[2];
+    result.isl = matches[3];
+    var utopia_date = matches[4];
+    if (utopia_date) {
+      result.tick = utimeToInt(utopia_date);
+    } else {
+      result.tick = 0;
+    }
+
+    if (!result.is_self) {
+      var attacked_recently = this.get("this province has [gbp] in the last month");
+      result.gbp = config.GBP[attacked_recently];
+    }
+
+    result.race = this.get("Race [race]");
+    result.soldiers = this.get("Soldiers [number]");
+
+    var matches;
+    // [ospec] prevents [ruler] from matching any further
+    matches = this.get_multi("Ruler [ruler] [ospec]");
+    var personality_prefix = matches[1];
+    var nobility = matches[2];
+    result.ruler = matches[3];
+    var personality_suffix = matches[4];
+    [result.honor, result.monarch, result.sex] = this.parseNobility(nobility);
+    // Either a prefix or a suffix will be defined, never both
+    result.personality = this.getPersonality(
+      personality_prefix || personality_suffix
+    );
+    result.ospecs = this.get_multi("[ospec] [number]")[1];
+    result.land = this.get("Land [number]");
+    result.dspecs = this.get_multi("[dspec] [number]")[1];
+    result.peasants = this.get("Peasants [number]");
+    result.elites = this.get_multi("[elite] [number]")[1];
+    result.building_eff = this.get("Building Eff. [percentage]");
+    if (result.is_self) {
+      matches = this.get_multi("Thieves [number] \\([percentage]\\)");
+      result.thieves = matches[0];
+      result.thieves_pct = matches[1];
+    }
+    result.gold = this.get("Money [number]");
+    if (result.is_self) {
+      matches = this.get_multi("Wizards [number] \\([percentage]\\)");
+      result.wizards = matches[0];
+      result.wizards_pct = matches[1];
+    }
+    result.food = this.get("Food [number]");
+    result.horses = this.get("War Horses [number]");
+    result.runes = this.get("Runes [number]");
+    result.prisoners = this.get("Prisoners [number]");
+    result.trade_balance = this.get("Trade Balance [number]");
+    result.offense = this.get("Off. Points [number]");
+    result.nw = this.get("Networth [number] gold coins");
+    result.defense = this.get("Def. Points [number]");
+
+    var dragon = this.get("A [dragon] dragon ravages the lands!");
+    if (dragon) {
+      result.dragon = dragon;
+    }
+
+    var plague = this.get("The Plague has spread throughout our people!");
+    result.plague = !(plague == "undefined");
+
+    var war = this.get("Our Kingdom is at WAR!");
+    if (war) {
+      result.relations = "war";
+    }
+
+    return result;
+  }
+
+  getPersonality(personality){
+    return config.PERSONALITIES[personality];
+  }
+
+  parseNobility(nobility_string) {
+    var nobility = nobility_string;
+    var is_monarch = ["king", "queen"].includes(nobility_string);
+    var gender = "female";
+    if (config.MALE_NOBILITIES.includes(nobility_string)) {
+      gender = "male";
+    } else {
+      // the resulting data structure expacts nobility titles to be
+      // the male version, regardless of gender
+      var nobility_index = config.FEMALE_NOBILITIES.indexOf(nobility_string);
+      nobility = config.MALE_NOBILITIES[nobility_index];
+    }
+    return [nobility, is_monarch, gender];
   }
 }
 
@@ -516,7 +621,6 @@ exports.getParser = function(parser_name) {
     case "self":
       return SelfParser;
     case "sot":
-    case "selfsot":
       return SoTParser;
     case "som":
     case "selfsom":

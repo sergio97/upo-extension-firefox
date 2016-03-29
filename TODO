@@ -24,3 +24,4 @@ TODO Later
 1. decide if we should use backticks for strings w/ variables
 1. go through code and use "const" and "let" where appropriate
 1. Improve format of protocolbuffers data (ie. armies should be a list instead of 5 hard-coded values)
+1. Regression: Peasant Sorceress should be detected as female

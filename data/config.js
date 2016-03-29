@@ -1,49 +1,25 @@
 var XRegExp = require('xregexp');
 
 var ns = {};
-ns.RACES = [
-  //[race, ospec name, ospec off dspec name, dspec def, elite name, eite off, elite def, elite nw  ]
-  ["orc", "goblins", 5, "trolls", 5, "ogres", 9, 2, 6.75],
-  ["human", "swordsmen", 5, "archers", 5, "knights", 8, 3, 6.5],
-  ["halfling", "strongarms", 5, "slingers", 5, "brutes", 6, 5, 5.0],
-  //["gnome", "quickblades", 6, "pikemen", 5, "golems", 5, 5, 4.0],
-  ["dwarf", "warriors", 5, "axemen", 5, "berserkers", 7, 4, 6.0],
-  //["dark elf", "night rangers", 5, "druids", 5, "drows", 6, 4, 5.0],
-  //["dark elf", "night rangers", 5, "druids", 5, "drow", 6, 4, 5.0],  // angel == crazy
-  ["elf", "rangers", 5, "archers", 6, "elf lords", 7, 3, 6],
-  ["avian", "griffins", 5, "harpies", 5, "drakes", 8, 3, 6.5],
-  ["faery", "magicians", 5, "druids", 5, "beastmasters", 3, 7, 7],
-  ["undead", "skeletons", 5, "zombies", 5, "ghouls", 9, 3, 7],
+
+// [race, ospec name, ospec off dspec name, dspec def, elite name, eite off, elite def, elite nw  ]
+var RACES = [
+  ["Orc", "Goblins", 5, "Trolls", 5, "Ogres", 9, 2, 6.75],
+  ["Human", "Swordsmen", 5, "Archers", 5, "Knights", 8, 3, 6.5],
+  ["Halfling", "Strongarms", 5, "Slingers", 5, "Brutes", 6, 5, 5.0],
+  ["Dwarf", "Warriors", 5, "Axemen", 5, "Berserkers", 7, 4, 6.0],
+  ["Elf", "Rangers", 5, "Archers", 6, "Elf Lords", 7, 3, 6],
+  ["Avian", "Griffins", 5, "Harpies", 5, "Drakes", 8, 3, 6.5],
+  ["Faery", "Magicians", 5, "Druids", 5, "Beastmasters", 3, 7, 7],
+  ["Undead", "Skeletons", 5, "Zombies", 5, "Ghouls", 9, 3, 7],
 ]
 
-ns.rulerPrefix = 0
-ns.rulerPostfix = 1
-
-ns.RULERSPECIALIZATION = [
-  ["merchant", ns.rulerPrefix , "the wealthy"],
-  ["shepherd", ns.rulerPrefix, "the humble"],
-  ["sage" , ns.rulerPrefix, "the wise"],
-  ["rogue", ns.rulerPostfix, "the rogue"],
-  ["mystic", ns.rulerPostfix, "the sorcerer", "the sorceress"],
-  ["warrior", ns.rulerPostfix, "the warrior"],
-  ["tactician", ns.rulerPrefix, "the conniving"],
-  //["artisan", "the craftsman", "the craftswoman"],
-  ["warhero", ns.rulerPostfix, "the hero"],
-  ["cleric", ns.rulerPostfix, "the blessed"],
-]
-
-ns.RULERNOBILITY = [
-  ["peasant", ],
-  ["knight", "knight", "lady"],
-  ["lord", "lord", "noble lady"],
-  ["baron", "baron", "baroness"],
-  ["viscount", "viscount", "viscountess"],
-  ["count", "count", "countess"],
-  ["marquis", "marquis", "marchioness"],
-  ["duke", "duke", "duchess"],
-  ["prince", "prince", "princess"],
-  ["king", "king", "queen"],
-]
+var OSPECS = [for (entry of RACES) entry[1]];
+// exports.OSPECS = OSPECS;
+var DSPECS = [for (entry of RACES) entry[3]];
+// exports.DSPECS = DSPECS;
+var ELITES = [for (entry of RACES) entry[5]];
+// exports.ELITES = ELITES;
 
 ns.SPELLS = [
   ["minorprotection", "Our realm is now under a sphere of protection (?:for|until) (?<duration>[duration])"],
@@ -153,70 +129,93 @@ var SCIENCES = [
 ];
 exports.SCIENCES = SCIENCES;
 
-ns.DRAGONS = [
-  ["gold", ],
-  ["ruby", ],
-  ["sapphire", ],
-  ["emerald", ],
-  ["nodragon", ],
-]
+var GBP = {
+  "not been attacked much": 0,
+  "been attacked a little": 5,
+  "been attacked moderately": 25,
+  "been attacked pretty heavily": 45,
+  "been attacked extremely badly": 65,
+};
+exports.GBP = GBP;
 
-ns.GBP = [
-  ["nothit", "attacked much", "hit much", 0],
-  ["couple", "attacked a little", "hit a little", 5],
-  ["moderately", "attacked moderately","hit moderately", 25],
-  ["heavily", "attacked pretty heavily","hit pretty heavily", 45],
-  ["extremelyheavily", "attacked extremely badly","hit extremely badly", 65]
-]
+var MALE_NOBILITIES = [
+  "Peasant",
+  "Knight",
+  "Lord",
+  "Baron",
+  "Viscount",
+  "Count",
+  "Marquis",
+  "Duke",
+  "Prince",
+  "King",
+];
+var FEMALE_NOBILITIES = [
+  "Peasant",
+  "Lady",
+  "Noble Lady",
+  "Baroness",
+  "Viscountess",
+  "Countess",
+  "Marchioness",
+  "Duchess",
+  "Princess",
+  "Queen",
+];
+exports.MALE_NOBILITIES = MALE_NOBILITIES;
+exports.FEMALE_NOBILITIES = FEMALE_NOBILITIES;
 
-ns.RELATIONS = [
-  ["norel", "Normal"],
-  ["unfriendly" , "Unfriendly"],
-  ["hostile", "Hostile"],
-  ["war" , "War"],
-  ["cf", "Non Aggression Pact"]
-]
 
-// data for ruler
-// specialization = ( (s.slice(2)).join("|") for s of ns.RULERSPECIALIZATION).join("|")
-// nobility = ( [s[2], s[1]].join("|") if s.length > 1 for s of ns.RULERNOBILITY).join("|")
-races = [for (entry of ns.RACES) entry[0]].join("|")
-ospec = [for (entry of ns.RACES) entry[1]].join("|")
+var PERSONALITY_PREFIXES = {
+  "The Wealthy": "merchant",
+  "The Wise": "sage",
+  "The Conniving": "tactician",
+};
+var PERSONALITY_SUFFIXES = {
+  "the Rogue": "rogue",
+  "the Sorcerer": "mystic",
+  "the Sorceress": "mystic",
+  "the Warrior": "warrior",
+  "the Blessed": "cleric",
+  "the Hero": "warhero",
+};
+var personalities = {};
+for (var attr in PERSONALITY_PREFIXES) {
+  personalities[attr] = PERSONALITY_PREFIXES[attr];
+}
+for (var attr in PERSONALITY_SUFFIXES) {
+  personalities[attr] = PERSONALITY_SUFFIXES[attr];
+}
+exports.PERSONALITIES = personalities;
 
+var personality_prefixes = Object.keys(PERSONALITY_PREFIXES).join("|");
+var personality_suffixes = Object.keys(PERSONALITY_SUFFIXES).join("|");
+var nobilities = (MALE_NOBILITIES.concat(FEMALE_NOBILITIES)).join("|");
 
 
 // [[name, regex], ...]
 FORMATS = [
   ["province", "[a-zA-z0-9 _-]{3,30}"],
-  ["provinceng" , "[a-zA-z0-9 _-]{3,30}?"], // non greedy version
-  ["kingdom" , "[a-zA-z0-9 _-]{3,30}"],
-  ["location" , "\\(\\s?([0-9]{1,2})\\s?:\\s?([0-9]{1,2})\\s?\\)"],
-  ["uto_date" , "[a-z]+ [0-9]+ of YR[0-9]+"],
-  ["word" , "\\S?\\s?\\S+\\b\\S*"],
-  ["number" , "[-0-9,.]+"],
-  ["percentage" , "[-0-9,.]+%"],
-  ["ruler", "(#specialization|) ?(#nobility|)([a-zA-z0-9 _-]{3,31}?)(|#specialization)(?= (#races)| (#ospec)|$|,[^0-9]|Personality|\\*\\* Summary)"],
-  ["race" , [for (entry of ns.RACES) entry[0]].join("|")],
-  ["ospec" , [for (entry of ns.RACES) entry[1]].join("|")],
-  ["dspec" , [for (entry of ns.RACES) entry[3]].join("|")],
-  ["elite" , [for (entry of ns.RACES) entry[5]].join("|")],
-
-//   ["honor" ,   (([s[2], s[1]]).join("|") if s.length > 1 for s of ns.RULERNOBILITY).join("|")],
-//   ["honorext" ,  "peasant|" + (([s[2], s[1]]).join("|") if s.length > 1 for s of ns.RULERNOBILITY).join("|")],
-
-  ["dragon" ,   [for (entry of ns.DRAGONS) entry[0]].join("|")],
-
-  ["gbp" , [for (entry of ns.GBP) entry[1]].join("|")],
-  ["gbpangel" , [for (entry of ns.GBP) entry[2]].join("|")],
-
-  ["stance" ,  ["normal", "peaceful", "aggressive", "fortified"].join("|")],
-
-  ["duration" , "(?<durationnumber>[0-9]+|the end of this)? day"],
+  ["provinceng", "[a-zA-z0-9 _-]{3,30}?"], // non greedy version
+  ["kingdom", "[a-zA-z0-9 _-]{3,30}"],
+  ["location", "\\(\\s?([0-9]{1,2})\\s?:\\s?([0-9]{1,2})\\s?\\)"],
+  ["utopia_date", "(January|February|March|April|May|June|July) ([0-9]{1,2}) of YR([0-9]{1,2})"],
+  ["utopia_short_date", "(Jan|Feb|March|April|May|June|July) ([0-9]{1,2}) of YR([0-9]{1,2})"],
+  ["word", "\\S?\\s?\\S+\\b\\S*"],
+  ["number", "[-0-9,.]+"],
+  ["percentage", "[-0-9,.]+%"],
+  ["ruler", `(${personality_prefixes})? ?(${nobilities}) ([a-zA-z0-9 _-]{3,30}?) ?(${personality_suffixes})?`],
+  ["race", [for (entry of RACES) entry[0]].join("|")],
+  ["ospec", OSPECS.join("|")],
+  ["dspec", DSPECS.join("|")],
+  ["elite", ELITES.join("|")],
+  ["gbp", Object.keys(GBP).join("|")],
+  ["stance",  ["normal", "peaceful", "aggressive", "fortified"].join("|")],
+  ["duration", "(?<durationnumber>[0-9]+|the end of this)? day"],
 
 //   ["spell_result" , ( s[1] if s.length > 1 for s of ns.SPELLS).join("|")],
 //   ["thief_result" , ( s[1] if s.length > 1 for s of ns.THIEFOPS).join("|")],
-  ["relation", [for (entry of ns.RELATIONS) entry[1]].join("|")]
-]
+];
 
 
 
@@ -226,7 +225,7 @@ FORMATS = [
 var raw_page_identifiers = [
   ["aid", "We have sent [number] (?:bushel|gold coin|rune|soldier)s?.{0,80} to [province] [location]"],
   ["self", "self\\[[province]:[location]\\]"],
-  ["sot", "the province of [province] [location] ?(?:Pre Age|[uto_date]).?[word]{3,15}.?race [race]"],
+  ["sot", "the province of [province] [location] ?(?:Pre Age|[utopia_date]).?[word]{3,15}.?race [race]"],
   ["angelsot", "The Province of [province] [location] \\[http://www.utopiatemple.com"],
   ["som", "thieves listen in on a report from the Military Elders of [province] [location]"],
   ["selfsom", "[ruler], we have [number] generals available to lead our armies. One must always stay here to lead our forces in defense"],
