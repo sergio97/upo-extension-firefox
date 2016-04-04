@@ -1,0 +1,222 @@
+package UpoOpu.pb;
+
+option java_package = "implementation.pb";
+option java_outer_classname = "UpoOpuEnums"; 
+
+enum SexType {
+	MALE = 1;
+	FEMALE = 2;
+}
+
+enum RaceType {
+	HUMAN = 1;
+	ELF = 2;
+	DWARF = 3;
+	ORC = 4;
+	GNOME = 5;
+	HALFLING = 6;
+	DARKELF = 7;
+	AVIAN = 8;
+	UNDEAD = 9;
+	FAERY = 10;
+}
+
+enum PersonalityType {
+	MERCHANT = 1;
+	SHEPHERD = 2;
+	SAGE = 3;
+	ROGUE = 4;
+	MYSTIC = 5;
+	WARRIOR = 6;
+	WARHERO = 7;
+	ARTISAN = 8;
+	TACTICIAN = 9;
+	CLERIC = 10;
+}
+
+enum RelationType {
+	NOREL = 1;
+	UNFRIENDLY = 2;
+	HOSTILE = 3;
+	WAR = 4;
+	CF = 5;
+}
+
+enum SpellType {
+	MINORPROTECTION = 1;
+	GREATERPROTECTION = 2;
+	FOG = 3;
+	MAGICSHIELD = 4;
+	MYSTICAURA = 5;
+	FERTILELANDS = 6;
+	NATURESBLESSING = 7;
+	LOVEANDPEACE = 8;
+	TREEOFGOLD = 9;
+	QUICKFEET = 10;
+	BUILDERSBOON = 11;
+	INSPIREARMY = 12;
+	ANONYMITY = 13;
+	INVISIBILITY = 14;
+	CLEARSIGHT = 15;
+	WARSPOILS = 17;
+	FANATICISM = 18;
+	FOUNTAINOFKNOWLEDGE = 19;
+	TOWNWATCH = 20;
+	AGGRESSION = 21;
+	ANIMATEDEAD = 22;
+	REFLECTMAGIC = 23;
+	SHADOWLIGHT = 24;
+	PATRIOTISM = 25;
+	PARADISE = 26;
+	MAGESFURY = 44;
+	BLOODLUST = 45;
+	// OFFENSE
+	STORMS = 27;
+	DROUGHTS = 28;
+	VERMIN = 29;
+	EXPOSETHIEVES = 30;
+	GREED = 31;
+	FOOLSGOLD = 32;
+	PITFALLS = 33;
+	FIREBALL = 34;
+	CHASTITY = 35;
+	LIGHTNINGSTRIKE = 36;
+	EXPLOSIONS = 37;
+	AMNESIA = 38;
+	NIGHTMARES = 39;
+	MYSTICVORTEX = 40;
+	METEORSHOWERS = 41;
+	TORNADOES = 42;
+	LANDLUST = 43; 
+}
+
+enum ThiefType {
+	SPYONTHRONE = 1;
+	SNATCHNEWS = 2;
+	INFILTRATE = 3;
+	SURVEY = 4;
+	SPYONMILITARY = 5;
+	SPYONSCIENCES = 6;
+	// OFFENSIVE OPS
+	SABOTAGEWIZARDS = 7;
+	ROBTHEGRANARIES = 8;
+	ROBTHEVAULTS = 9;
+	ROBTHETOWERS = 10;
+	KIDNAPPING = 11;
+	ARSON = 12;
+	GREATERARSON = 13;
+	NIGHTSTRIKE = 14;
+	INCITERIOTS = 15;
+	STEALHORSES = 16;
+	BRIBETHIEVES = 17;
+	BRIBEGENERALS = 18;
+	FREEPRISONERS = 19;
+	ASSASSINATEWIZARDS = 20;
+	PROPAGANDA = 30;
+}
+
+
+enum ResourceType {
+	RES_GOLD = 1;
+	RES_RUNES = 2;
+	RES_FOOD = 3;
+
+	RES_PEASANTS = 4;
+	RES_SOLDIERS = 5;
+	RES_OSPECS = 6;
+	RES_DSPECS = 7;
+	RES_ELITES = 8;
+	RES_THIEVES = 9;
+	RES_WIZARDS = 10;
+
+	RES_LAND = 11;
+	RES_SCIENCE = 12;
+
+	RES_HORSES = 13;
+	RES_PRISONERS = 14;
+
+	RES_SPECS = 15;
+	RES_TROOPS = 16;
+
+	RES_BUILDINGS = 17;
+}
+
+enum DragonType {
+	GOLD = 1;
+	RUBY = 2;
+	SAPPHIRE = 3;
+	EMERALD = 4;
+	NODRAGON = 5;
+}
+
+enum StanceType {
+	NORMAL = 1;
+	PEACEFUL = 2;
+	AGGRESSIVE = 3;
+	FORTIFIED = 4;	
+	STANCEWAR = 5;
+}
+
+enum BuildingType {
+	BARRENLANDS = 1;
+	HOMES = 2;
+	FARMS = 3;
+	MILLS = 4;
+	BANKS = 5;
+	TRAININGGROUNDS = 6;
+	ARMOURIES = 7;
+	BARRACKS = 8;
+	FORTS = 9;
+	GUARDSTATIONS = 10;
+	HOSPITALS = 11;
+	GUILDS = 12;
+	TOWERS = 13;
+	THIEVESDENS = 14;
+	WATCHTOWERS = 15;
+	LIBRARIES = 16;
+	SCHOOLS = 17;
+	STABLES = 18;
+	DUNGEONS = 19;
+}
+
+enum ScienceType {
+	ALCHEMY = 1;
+	TOOLS = 2;
+	HOUSING = 3;
+	FOOD = 4;
+	MILITARY = 5;
+	THIEVERY = 6;
+	CHANNELING = 7;
+}
+
+enum HonorType {
+	PEASANT = 1;
+	KNIGHT = 2;
+	LORD = 3;
+	BARON = 4;
+	VISCOUNT = 5;
+	COUNT = 6;
+	MARQUIS = 7;
+	DUKE = 8;
+	PRINCE = 9;
+}
+ 
+enum AttackType {
+	TRADMARCH = 1;
+	RAZE = 2;
+	PLUNDER = 3;
+	LEARN = 4;
+	MASSACRE = 5;
+	CONQUEST = 6;
+	AMBUSH = 7;
+	FAILEDATTACK = 8;
+}
+
+enum AttackOversendType {
+	NOOVERSEND = 1; //  A tough battle took place, but we have managed a victory!
+	EVOVERSEND = 2; // Emerged Victorious
+	TBROVERSEND = 3; // Though but resounding
+	CRUSHOVERSEND = 4; //  marches onto the enemy's lands and crushes their resistance
+	LMROVERSEND = 5; // little meaningful resistance and quickly force your enemies to surrender!
+	UNKNOWNOVERSEND = 6;
+}

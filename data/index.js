@@ -10,6 +10,19 @@ var config = require("./config");
 var parsers = require("./parsers/parsers");
 
 
+
+
+
+// Trying to get protocol buffers code working
+var goog = require("./lib/google-protobuf");
+var upoopu_proto = require("./pb/upoopu.proto"); // Doesn't work
+
+
+
+
+
+
+
 var button = ToggleButton({
   id: "my-button",
   label: "my button",
@@ -121,7 +134,8 @@ function findParser(body, metadata) {
 
 // code for testing easily/lazily
 var tabs = require("sdk/tabs");
-tabs.open("file:///home/sergio/code/upo-extension-firefox/saved_pages/SelfSpells.html");
+// tabs.open("file:///home/sergio/code/upo-extension-firefox/saved_pages/SelfThrone-preage.html");
+tabs.open("file:///home/sergio/code/upo-extension-firefox/saved_pages/Throne.html");
 // tabs.open("http://utopia-game.com");
 
 console.log("extension code has finished initializing")

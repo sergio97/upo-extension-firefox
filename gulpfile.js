@@ -16,9 +16,22 @@ gulp.task("run", function() {
   var process = spawn("jpm", ["run", "-b", "/usr/bin/firefox", "--binary-args", "--jsconsole"], {detached: false});
   process.on("close", function(code) {
     console.log("Process exited with code " + code);
-  })
+  });
 
 });
 
-gulp.task("default", ["run"]);
+// compile Protocol Buffers files. Requites protoc to be availabe in PATH
+gulp.task("pb", function() {
+  // protoc --js_out=binary:./build/ *.proto
+  var process = spawn("protoc", ["--js_out=import_style=commonjs,binary:./../data/pb/", "upoopu.proto"], {detached: false, cwd: "pb_messages"});
+  process.on("error", function(err) {
+    console.log("ERROR in process: " + err);
+  });
+  process.on("close", function(code) {
+    console.log("Process exited with code " + code);
+  });
 
+});
+
+
+gulp.task("default", ["run"]);

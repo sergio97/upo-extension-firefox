@@ -1,0 +1,29 @@
+package UpoOpuApp.pb;
+
+option java_package = "implementation.pb";
+option java_outer_classname = "UpoOpuApp";
+
+enum EventType {
+	EVENT_GOT_UTO_USER_PASS = 1;
+	EVENT_GOT_UTO_PROV = 2;
+	EVENT_UTO_CONNECTED = 3;
+
+	EVENT_UPOOPU_CONNECTED = 10;
+	EVENT_UPOOPU_INVALID_CREDENTIALS = 11;
+}
+
+
+message UpoOpuEvent {
+    required EventType event = 1;
+    optional string data = 2;
+}
+
+enum AppRequestType {
+	APP_REQUEST_GOT_UTO_USER_PASS = 1;
+	 
+}
+
+message UpoOpuAppRequest {
+	required AppRequestType event = 1;
+    optional string data = 2;
+}

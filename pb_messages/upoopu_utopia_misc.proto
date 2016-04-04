@@ -1,0 +1,119 @@
+import "upoopu_enums.proto";
+
+package UpoOpu.pb;
+
+option java_package = "implementation.pb";
+option java_outer_classname = "UpoOpuUtopiaMisc"; 
+
+
+ 
+message IntelAttack {
+	// the target
+	optional string province = 1;
+	optional int32 kd = 2;
+	optional int32 isl = 3;
+	
+	// self
+	optional string self_province = 4;
+	optional int32 self_kd = 5;
+	optional int32 self_isl = 6;
+
+	optional int32 kills = 11;
+	
+	// currently not used
+	optional int32 losses = 12;
+	
+	optional int32 taken_acres = 13;
+	optional int32 taken_books = 14;
+	optional int32 taken_peasants = 15;
+	optional int32 destroyed_t_and_m = 16;
+	
+	optional int32 taken_gold = 17;
+	optional int32 taken_runes = 18;
+	optional int32 taken_food = 19;
+	
+	optional int32 destroyed_acres = 20;
+	
+	optional float attack_time = 21;
+	
+	optional UpoOpu.pb.AttackType attack_type = 22;
+	optional UpoOpu.pb.AttackOversendType oversend = 23;
+	
+	optional int32 unix_time = 25;
+	optional int32 uto_time = 53;
+
+	optional bool by_self = 50;
+    repeated int32 by_groups = 51 [packed=true];
+}
+
+message IntelHistory {
+	// can't keep all data, so optimize it bit
+	optional string province = 1;
+	optional int32 kd = 2;
+	optional int32 isl = 3;
+	
+	repeated UpoOpu.pb.HonorType honor = 4 [packed=true];
+	
+	repeated int32 peasants = 5 [packed=true];
+	repeated int32 soldiers = 6 [packed=true];
+	repeated int32 ospecs = 7 [packed=true];
+    repeated int32 dspecs = 8 [packed=true];
+    repeated int32 elites = 9 [packed=true];
+    
+    repeated int32 horses = 10 [packed=true];
+    
+    repeated int32 thieves = 11 [packed=true];
+    repeated int32 wizards = 12 [packed=true];
+    
+    repeated int32 thieves_pct = 13 [packed=true];
+    repeated int32 wizards_pct = 14 [packed=true];
+    
+    
+    repeated int32 land = 15 [packed=true];
+    repeated int32 nw = 16 [packed=true];
+    
+    
+    repeated int32 gold = 17 [packed=true];
+    repeated int32 food = 18 [packed=true];
+    repeated int32 runes = 19 [packed=true];
+    
+    
+    repeated int32 building_eff = 20 [packed=true];
+    
+    repeated sint32 trade_balance = 21 [packed=true];
+    
+    repeated int32 offense = 22 [packed=true];
+    repeated int32 defense = 23 [packed=true];
+    
+    // time the data is gathered
+    repeated int32 unix_time = 35 [packed=true];
+    
+    // trust level of the data
+    repeated int32 trust = 36 [packed=true];
+}
+
+message UserProvinces {
+	message Province {
+	    optional string province = 1;
+	    optional int32 kd = 2;
+	    optional int32 isl = 3;
+	    optional int32 trust = 4;
+	    optional bool t5 = 5;
+	    optional int32 id = 6;
+	}
+    repeated Province provinces = 1;
+}
+ 
+message IntelTargetFinder {
+	message Province {
+		optional string name = 1;
+		optional string race = 2;
+		optional int32 kd_isl = 3;
+		optional int32 nw = 4;
+  		optional int32 kd_nw = 5;
+  		optional bytes norm_data = 6;
+  		optional bytes list_data = 7;
+	}
+    repeated Province provinces = 1;
+}
+ 

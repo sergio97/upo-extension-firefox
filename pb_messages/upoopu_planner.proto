@@ -1,0 +1,44 @@
+import "upoopu_enums.proto";
+
+package UpoOpu.pb;
+
+option java_package = "implementation.pb";
+option java_outer_classname = "UpoOpuPlanner"; 
+
+message WaveSetup {
+	message Province {
+		required string province = 1;
+		optional int32 kd = 2;
+		optional int32 isl = 3;
+		
+		// override stuff
+		optional int32 gbp = 10;
+		optional int32 generals = 11;
+		optional int32 offense = 12;
+		optional int32 defense = 13;
+		optional float army_back_in = 14;
+		optional int32 land_coming_in = 15;
+	}
+	
+	// core data
+	repeated Province attackers = 1;
+	repeated Province targets = 2;	
+}
+
+
+message WarPlan {
+	message Attack {
+		optional string target = 1;
+		optional string attacker = 2;
+	}
+	
+	// core data
+	optional int32 min_dpa = 1;
+	optional string min_def = 2;
+	optional string defense_limit = 3;
+	repeated string defense_limit_races = 4;
+	optional bool keep_attackers_sorted = 5;
+	optional bool keep_targets_sorted = 6;
+	
+	repeated Attack attacks = 7;
+}

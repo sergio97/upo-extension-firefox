@@ -1,0 +1,403 @@
+import "upoopu_enums.proto";
+import "upoopu_utopia_misc.proto";
+
+package UpoOpu.pb;
+
+option java_package = "implementation.pb";
+option java_outer_classname = "UpoOpu";
+
+
+
+
+
+message IntelSoT {
+	optional string province = 1;
+	optional int32 kd = 2;
+	optional int32 isl = 3;
+	optional UpoOpu.pb.RaceType race = 4;
+	optional int32 soldiers = 5 [default = 0];
+	optional string ruler = 6;
+	optional UpoOpu.pb.HonorType honor = 7;
+	optional UpoOpu.pb.PersonalityType personality = 8;
+	optional bool monarch = 9;
+	optional UpoOpu.pb.SexType sex = 10;
+	optional int32 ospecs = 11 [default = 0];
+    optional int32 land = 12;
+    optional int32 dspecs = 13 [default = 0];
+    optional int32 peasants = 14;
+    optional int32 elites = 15 [default = 0];
+    optional int32 building_eff = 16;
+    optional int32 thieves = 17;
+    optional int32 thieves_pct = 18;
+    optional int32 gold = 19 [default = 0];
+    optional int32 wizards = 20;
+    optional int32 wizards_pct = 21;
+    optional int32 food = 22 [default = 0];
+    optional int32 horses = 23;
+    optional int32 runes = 24 [default = 0];
+    optional int32 prisoners = 25;
+    optional sint32 trade_balance = 26;
+    optional int32 offense = 27;
+    optional int32 defense = 28;
+    optional UpoOpu.pb.DragonType dragon = 29;
+    optional UpoOpu.pb.RelationType relations = 30;
+    optional int32 nw = 31; // can be set on self intel only
+
+    optional int32 gbp = 32; // gb protection
+    optional bool has_plague = 33;
+
+    // time the data is gathered
+    optional int32 unix_time = 35;
+    optional int32 uto_time = 53;
+
+    // trust level of the data
+    optional int32 trust = 36;
+    optional int32 accuracy = 52;
+    optional string poster = 37;
+
+    optional int32 by_kd = 38;
+    optional int32 by_isl = 39;
+
+    optional bool is_self = 40; // self intel indicator
+
+    optional int32 tick = 41;
+
+    optional bool by_self = 50;
+    repeated int32 by_groups = 51 [packed=true];
+}
+
+message IntelSoM {
+	message Army {
+		optional float away = 1;
+		optional int32 generals = 2;
+		optional int32 soldiers = 8;
+		optional int32 ospecs = 3;
+		optional int32 dspecs = 4;
+		optional int32 elites = 5;
+		optional int32 horses = 6;
+		optional int32 land = 7;
+	}
+
+	optional string province = 1;
+	optional int32 kd = 2;
+	optional int32 isl = 3;
+	optional float military_pct = 4;
+	optional float wages = 5;
+	optional float military_efficiency = 6;
+
+	optional float off_me = 7;
+	optional float def_me = 8;
+	optional int32 defense = 9;
+	optional int32 offense = 10;
+
+	optional Army army_home = 11;
+	optional Army army_out_1 = 12;
+	optional Army army_out_2 = 13;
+	optional Army army_out_3 = 14;
+	optional Army army_out_4 = 15;
+	optional Army army_out_5 = 21;
+
+	repeated int32 training_ospecs = 16 [packed=true];
+	repeated int32 training_dspecs = 17 [packed=true];
+	repeated int32 training_elites = 18 [packed=true];
+	repeated int32 training_thieves = 19 [packed=true];
+
+	// infered data
+	optional UpoOpu.pb.RaceType race = 20;
+
+	// time the data is gathered
+    optional int32 unix_time = 25;
+    optional int32 uto_time = 53;
+
+     // trust level of the data
+    optional int32 trust = 26;
+    optional int32 accuracy = 52;
+    optional string poster = 29;
+
+    optional int32 by_kd = 27;
+    optional int32 by_isl = 28;
+
+    optional bool is_self = 30; // self intel indicator
+
+    optional bool by_self = 50;
+    repeated int32 by_groups = 51 [packed=true];
+}
+
+
+message IntelSurvey {
+	message BuildingData {
+		optional UpoOpu.pb.BuildingType building = 1;
+		optional int32 quantity = 2;
+		optional float percentage = 3;
+		repeated int32 incoming = 4  [packed=true];
+	}
+
+	optional string province = 1;
+	optional int32 kd = 2;
+	optional int32 isl = 3;
+
+	optional int32 workers = 4;
+	optional int32 jobs	= 5;
+    optional float building_efficiency = 6;
+	optional int32 workers_needed = 7;
+
+	repeated BuildingData buildings = 10;
+
+	// time the data is gathered
+    optional int32 unix_time = 25;
+    optional int32 uto_time = 53;
+
+     // trust level of the data
+    optional int32 trust = 26;
+    optional int32 accuracy = 52;
+
+    optional string poster = 29;
+
+    optional int32 by_kd = 27;
+    optional int32 by_isl = 28;
+
+    optional bool is_self = 30; // self intel indicator
+
+    optional bool by_self = 50;
+    repeated int32 by_groups = 51 [packed=true];
+}
+
+message IntelScience {
+	message ScienceData {
+		optional UpoOpu.pb.ScienceType science = 1;
+		optional int32 quantity = 2;
+		optional float per_acre = 3;
+		repeated int32 incoming = 4  [packed=true];
+	}
+
+	optional string province = 1;
+	optional int32 kd = 2;
+	optional int32 isl = 3;
+
+	repeated ScienceData sciences = 10;
+
+	// time the data is gathered
+    optional int32 unix_time = 25;
+    optional int32 uto_time = 53;
+
+     optional int32 trust = 26;
+     optional int32 accuracy = 52;
+    optional string poster = 29;
+
+    optional int32 by_kd = 27;
+    optional int32 by_isl = 28;
+
+    optional bool is_self = 30; // self intel indicator
+
+    optional bool by_self = 50;
+    repeated int32 by_groups = 51 [packed=true];
+}
+
+message IntelInfiltrate {
+
+	optional string province = 1;
+	optional int32 kd = 2;
+	optional int32 isl = 3;
+
+	optional int32 thieves = 4;
+
+	optional int32 by_kd = 5;
+    optional int32 by_isl = 6;
+
+	// time the data is gathered
+    optional int32 unix_time = 25;
+    optional int32 uto_time = 53;
+
+     // trust level of the data
+    optional int32 trust = 26;
+    optional int32 accuracy = 52;
+    optional string poster = 29;
+
+    optional bool by_self = 50;
+    repeated int32 by_groups = 51 [packed=true];
+
+}
+
+message IntelKD {
+	message Province {
+		optional string province = 1;
+		optional UpoOpu.pb.RaceType race = 2;
+		optional int32 land = 3;
+		optional int32 nw = 4;
+		optional UpoOpu.pb.HonorType honor = 5;
+		optional bool monarch = 6;
+		optional bool protection = 7;
+	}
+
+	optional string kingdom = 1;
+
+	optional int32 kd = 2;
+	optional int32 isl = 3;
+
+	optional int32 by_kd = 13;
+    optional int32 by_isl = 14;
+
+	// this info is pretty useless, let's skip it for now
+	//optional UpoOpu.pb.RelationType relation_to  = 4;
+	//optional UpoOpu.pb.RelationType relation_towards = 5;
+
+	optional UpoOpu.pb.RelationType relation_origin_to_kd  = 15;
+	optional UpoOpu.pb.RelationType relation_kd_to_origin = 16;
+
+	optional int32 points_origin_to_kd  = 17;
+	optional int32 points_kd_to_origin = 18;
+
+	optional UpoOpu.pb.StanceType stance = 6;
+	optional int32 wars_won = 7;
+	optional int32 wars_concluded = 8;
+	optional int32 avg_opponent_nw = 9;
+
+	repeated Province provinces = 10;
+
+	optional int32 war_kd = 11;
+	optional int32 war_isl = 12;
+
+    optional int32 unix_time = 25;
+    optional int32 uto_time = 53;
+
+    optional bool by_self = 50;
+    repeated int32 by_groups = 51 [packed=true];
+}
+
+message IntelKdNews {
+	message ProvinceAction {
+		optional string province = 1;
+		optional int32 kd = 2;
+		optional int32 isl = 3;
+
+		optional string target_province = 4;
+		optional int32 target_kd = 5;
+		optional int32 target_isl = 6;
+
+		optional int32 acres_taken = 7;
+		optional UpoOpu.pb.AttackType attack = 8;
+
+		//optional int32 hour_offset = 9;
+
+		optional int32 tick = 10;
+
+		optional string action = 11;
+	}
+
+	optional int32 kd = 1;
+	optional int32 isl = 2;
+
+	repeated ProvinceAction province_actions = 3;
+
+	//optional int32 hour_start = 4;
+	//optional int32 hour_end = 5;
+
+	// new and improved
+	optional int32 tick_start = 6;
+	optional int32 tick_end = 7;
+
+    optional int32 unix_time = 25;
+    optional int32 uto_time = 53;
+
+    optional bool by_self = 50;
+    repeated int32 by_groups = 51 [packed=true];
+}
+
+message IntelOp {
+	optional string province = 1;
+	optional int32 kd = 2;
+	optional int32 isl = 3;
+
+	optional UpoOpu.pb.SpellType spell = 4;
+	optional UpoOpu.pb.ThiefType thiefop = 5;
+	optional int32 dur = 6;
+
+
+	// this is old and awkward
+	optional sint32 delta_acres = 7; // landlust
+	optional sint32 delta_peasants = 8; // fireball and prop
+	optional sint32 delta_troops = 9; // nightstrike
+	optional sint32 delta_wizards = 10; // aw and prop
+    optional sint32 delta_thieves = 11; // prop
+    optional sint32 delta_specs = 12; // prop
+    optional sint32 delta_soldiers = 13; //prop
+    optional sint32 delta_elites = 14; // prop
+
+    // new and shiny
+	optional UpoOpu.pb.ResourceType resource = 15;
+	optional sint32 delta = 16;
+
+	optional string poster = 17;
+
+	optional int32 unix_time = 25;
+	optional int32 uto_time = 53;
+
+	optional bool by_self = 50;
+    repeated int32 by_groups = 51 [packed=true];
+}
+
+message IntelSelfSpells {
+	message Spell {
+		optional UpoOpu.pb.SpellType spell = 1;
+		optional int32 dur = 2;
+	}
+
+	optional string province = 1;
+	optional int32 kd = 2;
+	optional int32 isl = 3;
+
+	repeated Spell spells = 4;
+
+	optional int32 unix_time = 25;
+	optional int32 uto_time = 53;
+
+	optional bool by_self = 50;
+    repeated int32 by_groups = 51 [packed=true];
+}
+
+message IntelAid {
+	message Spell {
+		optional UpoOpu.pb.SpellType spell = 1;
+		optional int32 dur = 2;
+	}
+
+	optional string province = 1;
+	optional int32 kd = 2;
+	optional int32 isl = 3;
+
+	optional int32 gold = 4;
+	optional int32 runes = 5;
+	optional int32 food = 6;
+	optional int32 soldiers = 7;
+
+
+	optional string poster = 17;
+
+	optional int32 unix_time = 25;
+	optional int32 uto_time = 53;
+
+	optional bool by_self = 50;
+    repeated int32 by_groups = 51 [packed=true];
+}
+
+
+message IntelCombined {
+
+	repeated IntelSoT sots = 1;
+	repeated IntelSoM soms = 2;
+	repeated IntelKD kds = 3;
+	repeated IntelOp ops = 5;
+	repeated IntelSurvey surveys = 6;
+	repeated IntelKdNews kdnews = 7;
+	repeated IntelScience science = 8;
+	repeated IntelInfiltrate infiltrates = 9;
+	repeated UpoOpu.pb.IntelAttack attacks = 11;
+	repeated UpoOpu.pb.IntelSelfSpells selfspells = 12;
+	repeated IntelAid aid = 13;
+	//repeated IntelThief = 6;
+
+	// time the message is send
+	optional int32 current_time = 10;
+
+	repeated UpoOpu.pb.IntelHistory historic_data = 20;
+}
